@@ -2,7 +2,7 @@
 <div class="moi">
   <v-app>
     <v-container>
-      <h1 class="title font-weight-regular">Uitschrijven Nieuwsbrief</h1>
+      <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief</h1>
       <!-- <v-textarea v-model="bio" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
       <v-form ref="form" v-model="formulier.valid">
         <v-card>
@@ -13,9 +13,17 @@
                 <v-row>
                   <v-text-field v-model="formulier.email" :rules="emailRules" label="E-mail" :hint=bio required></v-text-field>
                 </v-row>
-                <v-row>
+              </v-col>
+              <v-col>
+                <v-text-field v-model="formulier.fullname" :rules="nameRules" :counter="30" label="Volledige naam (optioneel)"></v-text-field>
+                <v-select return-object v-model="formulier.selecttaal" :items="BEtaal" item-text="taal" item-value="formulier.selecttaal.abbr" label="Uw voorkeurtaal (optioneel)" :hint=voorkeurtaal></v-select>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
                     <v-text-field v-model="formulier.wachtw" :rules="nameRules" :counter="12" label="Wachtwoord (optioneel)" :hint=ww></v-text-field>
-                </v-row>
+                  </template>
+                  <span>{{ ww }}</span>
+                </v-tooltip>
+                <!-- <v-textarea v-model="ww" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
               </v-col>
             </v-row>
           </v-card-text>
@@ -125,7 +133,7 @@ export default {
   },
   data: () => ({
     url: 'xxx',
-    bio: 'Uw e-mailadres zal volledig worden gewist uit onze databank. Wij geven die informatie niet aan derden.',
+    bio: 'Uw e-mailadres zal enkel worden gebruikt voor het versturen van die nieuwsbrief. Wij geven die informatie niet aan derden.',
     ww: 'Automatisch gegenereerd indien niet ingevuld',
     slot: 'Later zal het steeds mogelijk zijn u uit te schrijven via de link die in elke nieuwsbrief wordt medegedeeld.\nDoor op de \'Accepteer\' te klikken, stemt u ermee in de nieuwsbrief onder de bovenbedoelde voorwaarden te ontvangen.\nAls u ervoor kiest om geen wachtwoord in te vullen, wordt een automatisch gegenereerd wachtwoord naar u toegezonden zodra u uw aanmelding hebt bevestigd. U kunt steeds om toezending van uw wachtwoord vragen wanneer u uw persoonlijke instellingen wilt wijzigen.',
     voorkeurtaal: 'Kies hier Uw voorkeurtaal voor de berichtgeving, de taal van het toegezonden arrest kiest u via de lijstkeuze',
