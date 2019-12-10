@@ -110,7 +110,7 @@ export default {
 			de: 'https://mailman.const-court.be/mailman/options/pdf_de'
 		},
 		bio: 'Klik op Afmelden of Herinnering wachtwoord na het invoeren van uw e-mail adres.',
-		slot: 'Bij de keuze Afmelden krijgt u voor alle lijsten waarop u bent ingeschreven een e-mail. U dient voor elke lijst apart af te melden. U kan ook voor een specifieke taal afmelden.\nBij de keuze Herinnering krijgt u uw wachtwoord per e-mail toegestuurd alsook een link om alle opties te wijzigen. Deze link redirect naar onze mailman server.',
+		slot: 'Bij de keuze Afmelden krijgt u voor alle lijsten waarop u bent ingeschreven een e-mail. U kan dan kiezen voor welke lijst of lijsten u wenst af te melden.\nBij de keuze Herinnering krijgt u uw wachtwoord per e-mail toegestuurd alsook een link om alle opties te wijzigen. Deze link redirect naar onze mailman server.',
 		formulier: {
 			email: '',
 			loginremind: 'Herinnering',
