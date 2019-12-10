@@ -1,5 +1,5 @@
 <template>
-<div class="moi">
+<div class="i">
   <v-app>
     <v-container>
       <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief</h1>
