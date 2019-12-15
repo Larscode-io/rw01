@@ -79,7 +79,10 @@
 								Bedankt
 							</v-card-title>
 							<v-card-text>
-								<p><span v-html="ax"></span></p>
+								<div v-if="!er">
+									<span v-html="ax"></span>
+								</div>
+								<div v-else>Mailman service is niet beschikbaar</div>
 							</v-card-text>
 							<v-divider></v-divider>
 							<v-card-actions>
@@ -166,19 +169,18 @@ export default {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				},
 				url: `${this.url}`,
-				data: params
+				data: params,
+				timeout: 2000
 			};
 			axios(opt)
 				.then((response) => {
 					const r = response.data.replace(/\s+/g, ' ').trim()
 					this.ax = r.replace(/<table.*table>/, '')
 					this.messages++
-					this.kleur = 'green'
 					return 'xxx'
 				})
-				.catch((er) => {
-					this.er.push(er)
-					this.kleur = 'warning';
+				.catch((e) => {
+					this.er = e
 				});
 		}
 	},
@@ -219,7 +221,7 @@ export default {
 			},
 		},
 		ax: '',
-		er: [],
+		er: '',
 		fullnameRules: [
 			v => v.length <= 40 || 'Naam maximum 40 karakters bevatten',
 		],
