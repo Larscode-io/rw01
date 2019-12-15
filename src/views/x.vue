@@ -2,7 +2,7 @@
 <div class="xxxx">
 	<v-app>
 		<v-container>
-			<h1 class="title font-weight-regular">Afmelden Nieuwsbrief of Herinnering wachtwoord</h1>
+			<h1 class="title font-weight-regular">Afmelden Nieuwsbrief en Opvragen wachtwoord</h1>
 			<!-- <v-textarea v-model="bio" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
 			<v-form ref="form" v-model="formulier.valid">
 				<v-card>
@@ -15,20 +15,10 @@
 					<v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Bent u akkoord ?" required></v-checkbox>
 					<v-btn :disabled="!formulier.valid" class="my-5" @click="afmelden">Afmelden</v-btn>
           <v-spacer />
+					<span>of</span>
+          <v-spacer />
 					<v-btn :disabled="!formulier.valid" class="my-5" @click="herinnering">Herinnering wachtwoord</v-btn>
 					<!-- <v-btn class="my-5" @click="submit">Accepteer</v-btn> -->
-					<v-spacer> </v-spacer>
-
-					<v-chip class="ma-2" :color="kleur" outlined>
-						<v-icon left>mdi-server-plus</v-icon>
-						Server Status
-					</v-chip>
-					<v-badge>
-						<template v-slot:badge>
-							<span v-if="messages > 0">{{ messages }}</span>
-						</template>
-						<v-icon large>mdi-email</v-icon>
-					</v-badge>
 					<v-textarea v-model="slot" auto-grow filled label="Info" rows="1"></v-textarea>
 				</v-card>
 				<v-card>

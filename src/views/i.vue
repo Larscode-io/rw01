@@ -11,24 +11,53 @@
 						<v-row>
 							<v-col>
 								<v-row>
-									<v-text-field v-model="formulier.email" :rules="emailRules" label="E-mail" :hint=bio required></v-text-field>
+									<v-text-field v-model="formulier.email" :rules="emailRules" :autofocus="true" :validate-on-blur="true" label="E-mail" :hint="bio" required @blur="$v.formulier.email.$touch()"></v-text-field>
+									<div v-if="$v.formulier.email.$error">
+										<p v-if="!$v.formulier.email.email">e-mail waarschijnlijk ongeldig</p>
+									</div>
 								</v-row>
-							</v-col>
-							<v-col>
-								<v-text-field v-model="formulier.fullname" :rules="nameRules" :counter="30" label="Volledige naam (optioneel)"></v-text-field>
-								<v-select return-object v-model="formulier.selecttaal" :items="BEtaal" item-text="taal" item-value="formulier.selecttaal.abbr" label="Uw voorkeurtaal (optioneel)" :hint=voorkeurtaal></v-select>
-								<v-tooltip bottom>
-									<template v-slot:activator="{ on }">
-										<v-text-field v-model="formulier.wachtw" :rules="nameRules" :counter="12" label="Wachtwoord (optioneel)" :hint=ww></v-text-field>
-									</template>
-									<span>{{ ww }}</span>
-								</v-tooltip>
-								<!-- <v-textarea v-model="ww" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
 							</v-col>
 						</v-row>
 					</v-card-text>
 				</v-card>
-
+				<v-col>
+					<v-dialog v-model="optioneledialog" persistent max-width="600px">
+						<template v-slot:activator="{ on }">
+							<v-btn v-on="on">Optionele gegevens</v-btn>
+						</template>
+						<v-card>
+							<v-card-title>
+								<span class="headline">Optionele gegevens</span>
+							</v-card-title>
+							<v-card-text>
+								<v-container>
+									<v-row>
+										<v-col cols="12" sm="6" md="6">
+											<v-text-field v-model="formulier.fullname" :rules="fullnameRules" :counter="40" label="Volledige naam"></v-text-field>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-select return-object v-model="formulier.selecttaal" :items="BEtaal" item-text="taal" item-value="formulier.selecttaal.abbr" label="Uw voorkeurtaal" :hint=voorkeurtaal></v-select>
+										</v-col>
+										<v-col cols="12">
+											<v-tooltip bottom>
+												<template v-slot:activator="{ on }">
+													<v-text-field v-model="formulier.wachtw" :rules="wwRules" :counter="12" label="Wachtwoord" :hint="ww">
+													</v-text-field>
+												</template>
+												<span>{{ ww }}</span>
+											</v-tooltip>
+										</v-col>
+									</v-row>
+								</v-container>
+							</v-card-text>
+							<v-card-actions>
+								<v-spacer></v-spacer>
+								<v-btn color="blue darken-1" text @click="optioneledialog = false">Close</v-btn>
+								<v-btn color="blue darken-1" text @click="optioneledialog = false">Save</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+				</v-col>
 				<v-card>
 					<v-card-title class="title font-weight-regular">De beschikbare lijsten</v-card-title>
 					<v-card-text>
@@ -41,20 +70,25 @@
 				</v-card>
 				<v-card>
 					<v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Bent u akkoord ?" required></v-checkbox>
-					<v-btn :disabled="!formulier.valid" class="my-5" @click="submit">Accepteer</v-btn>
-					<!-- <v-btn class="my-5" @click="submit">Accepteer</v-btn> -->
-					<v-spacer> </v-spacer>
-
-					<v-chip class="ma-2" :color="kleur" outlined>
-						<v-icon left>mdi-server-plus</v-icon>
-						Server Status
-					</v-chip>
-					<v-badge>
-						<template v-slot:badge>
-							<span v-if="messages > 0">{{ messages }}</span>
+					<v-dialog v-model="dialoog" width="500">
+						<template v-slot:activator="{ on }">
+							<v-btn :disabled="!formulier.valid" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
 						</template>
-						<v-icon large>mdi-email</v-icon>
-					</v-badge>
+						<v-card>
+							<v-card-title class="headline grey lighten-2" primary-title>
+								Bedankt
+							</v-card-title>
+							<v-card-text>
+								<p><span v-html="ax"></span></p>
+							</v-card-text>
+							<v-divider></v-divider>
+							<v-card-actions>
+								<v-spacer></v-spacer>
+								<v-btn color="primary" text @click="dialoog = false"> accepteer </v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-dialog>
+					<v-spacer> </v-spacer>
 					<v-textarea v-model="slot" auto-grow filled label="Info" rows="1"></v-textarea>
 				</v-card>
 			</v-form>
@@ -65,23 +99,39 @@
 
 <script>
 import axios from 'axios'
+import {
+	required,
+	email
+} from 'vuelidate/lib/validators'
 
 // @ is an alias to /src
 
 export default {
 	name: 'home',
+	validations: {
+		formulier: {
+			email: {
+				required,
+				email
+			}
+		}
+	},
+	computed: {},
 	components: {},
+	// mounted() {
+	// 	alert(process.env.NODE_ENV); // OUTPUT: production
+	// 	alert(process.env.DDD); // OUTPUT: undefined
+	// 	alert(process.env.VUE_APP_NODE_ENV); // OUTPUT: development
+	// },
 	methods: {
-
 		submit() {
 			const params = new URLSearchParams();
-			params.append('email', this.formulier.email);
+			params.append('email', this.formulier.email.replace(/(["'|])/g, '\\'));
 			params.append('fullname', this.formulier.fullname);
 			params.append('language', this.formulier.selecttaal.abbr);
 			params.append('pw', this.formulier.wachtw);
 			params.append('pw-conf', this.formulier.wachtw);
 			params.append('digest', 0);
-			//params.append('param2', 'value2');
 			switch (this.lijsten) {
 				case 'info_nl':
 					this.url = 'https://mailman.const-court.be/mailman/subscribe/info_nl'
@@ -120,22 +170,25 @@ export default {
 			};
 			axios(opt)
 				.then((response) => {
-          this.ax.push(response.data)
+					const r = response.data.replace(/\s+/g, ' ').trim()
+					this.ax = r.replace(/<table.*table>/, '')
 					this.messages++
 					this.kleur = 'green'
 					return 'xxx'
 				})
 				.catch((er) => {
-          this.er.push( er)
+					this.er.push(er)
 					this.kleur = 'warning';
 				});
 		}
 	},
 	data: () => ({
+		dialoog: false,
+		optioneledialog: false,
 		url: 'xxx',
-		bio: 'Uw e-mailadres zal enkel worden gebruikt voor het versturen van die nieuwsbrief. Wij geven die informatie niet aan derden.',
+		bio: 'Uw e-mailadres zal enkel worden gebruikt voor het versturen van die nieuwsbrief. Wij geven het niet aan derden.',
 		ww: 'Automatisch gegenereerd indien niet ingevuld',
-		slot: 'Later zal het steeds mogelijk zijn u uit te schrijven via de link die in elke nieuwsbrief wordt medegedeeld.\nDoor op de \'Accepteer\' te klikken, stemt u ermee in de nieuwsbrief onder de bovenbedoelde voorwaarden te ontvangen.\nAls u ervoor kiest om geen wachtwoord in te vullen, wordt een automatisch gegenereerd wachtwoord naar u toegezonden zodra u uw aanmelding hebt bevestigd. U kunt steeds om toezending van uw wachtwoord vragen wanneer u uw persoonlijke instellingen wilt wijzigen.\nOm aan te melden op meerdere listings maakt u een nieuwe keuze en accepteert u opnieuw.',
+		slot: 'Om aan te melden op meerdere nieuwsbrieven maakt u een nieuwe keuze en accepteert u opnieuw.',
 		voorkeurtaal: 'Kies hier Uw voorkeurtaal voor de berichtgeving, de taal van het toegezonden arrest kiest u via de lijstkeuze',
 		BEtaal: [{
 				taal: 'Nederlands',
@@ -165,20 +218,20 @@ export default {
 				abbr: ''
 			},
 		},
-    ax: [],
-    er: [],
-		nameRules: [
-			//v => !!v || 'Name is required',
-			v => v.length <= 10 || 'Naam mag max. 30 karakters bevatten',
+		ax: '',
+		er: [],
+		fullnameRules: [
+			v => v.length <= 40 || 'Naam maximum 40 karakters bevatten',
+		],
+		wwRules: [
+			v => v.length <= 12 || 'Wachtwoord 12 karakters is voldoende',
 		],
 		emailRules: [
 			v => !!v || 'E-mail is het (enige) verplichtte gegeven',
-			v => /.+@.+/.test(v) || 'E-mail met geldig zijn',
+			// v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail moet geldig zijn'
 		],
 		messages: 0,
 		kleur: ''
 	})
 }
 </script>
-							<!-- <v-switch v-model="valid" class="ma-4" label="Valid" readonly></v-switch>
-					<v-switch v-model="lazy" class="ma-4" label="Lazy"></v-switch> -->

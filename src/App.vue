@@ -3,7 +3,7 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/i">Inschrijven</router-link> |
-      <router-link to="/x">Afmelden - Herinnering wachtwoord</router-link>
+      <router-link to="/x">Afmelden & Opvragen wachtwoord</router-link>
     </div>
     <router-view/>
   </div>
