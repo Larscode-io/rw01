@@ -76,7 +76,7 @@
 						</template>
 						<v-card>
 							<v-card-title class="headline grey lighten-2" primary-title>
-								Bedankt
+								Verzoek is verzonden
 							</v-card-title>
 							<v-card-text>
 								<div v-if="!er">
