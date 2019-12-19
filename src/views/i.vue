@@ -20,7 +20,7 @@
 						</v-row>
 					</v-card-text>
 				</v-card>
-				<v-col>
+				<!-- <v-col>
 					<v-dialog v-model="optioneledialog" persistent max-width="600px">
 						<template v-slot:activator="{ on }">
 							<v-btn v-on="on">Optionele gegevens</v-btn>
@@ -57,7 +57,7 @@
 							</v-card-actions>
 						</v-card>
 					</v-dialog>
-				</v-col>
+				</v-col> -->
 				<v-card>
 					<v-card-title class="title font-weight-regular">De beschikbare lijsten</v-card-title>
 					<v-card-text>
