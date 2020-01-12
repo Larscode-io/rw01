@@ -12,15 +12,13 @@
 						<v-row>
 							<v-col>
 								<v-row>
-									<v-text-field v-model="formulier.email" :rules="emailRules" :autofocus="true" :validate-on-blur="true" label="E-mail" :hint="bio" required @blur="$v.formulier.email.$touch()"></v-text-field>
+									<v-text-field v-model="formulier.email" :rules="emailRules" :autofocus="true" label="E-mail" :hint="bio" required :validate-on-blur="true"  @blur="$v.formulier.email.$touch()"></v-text-field>
 									<div v-if="$v.formulier.email.$error">
 										<p v-if="!$v.formulier.email.email">e-mail waarschijnlijk ongeldig</p>
 									</div>
 								</v-row>
 								<v-row>
-									<EmailComp :value="email2" @input="(value)=>{email2=value}" />
-									<!-- <EmailComp v-model="email2" /> -->
-									<!-- v-model="formulier.email2" -->
+									<EmailComp :value="formulier.email2" @input="(value)=>{formulier.email2=value}" :validate-on-blur="true"  @blur="$v.formulier.email2.$touch()" />
 								</v-row>
 							</v-col>
 						</v-row>

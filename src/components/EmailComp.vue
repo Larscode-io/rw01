@@ -1,22 +1,31 @@
 <template>
 <div class="hello">
-	<v-text-field :value="value" @input="updateValue" />
-	<!-- <input :value="value" @input="updateValue" /> -->
-
-
-
+	<v-text-field :value="value" @input="updateValue" :validate-on-blur="true" @blur="$v.formulier.email2.$touch()" />
 </div>
 </template>
 <script>
+import {
+	required,
+	email
+} from 'vuelidate/lib/validators'
+
 export default {
 	name: 'EmailComp',
 	props: {
 		value: [String, Number]
 	},
+	validations: {
+		formulier: {
+			email2: {
+				required,
+				email
+			}
+		}
+	},
+
 	methods: {
 		updateValue(e) {
 			// this.$emit('input', e.target.value)
-      // https://stackoverflow.com/questions/42918710/how-to-use-v-bind-in-a-custom-component/54335369#54335369
 			this.$emit('input', e)
 		}
 	}
