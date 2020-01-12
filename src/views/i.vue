@@ -2,7 +2,8 @@
 <div class="i">
 	<v-app>
 		<v-container>
-			<h1 class="title font-weight-regular">Inschrijving Nieuwsbrief</h1>
+			<h1 class="title font-weight-regular">devlars911@gmail.com</h1>
+			<!-- <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief</h1> -->
 			<!-- <v-textarea v-model="bio" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
 			<v-form ref="form" v-model="formulier.valid">
 				<v-card>
@@ -17,53 +18,14 @@
 									</div>
 								</v-row>
 								<v-row>
-									<EmailComp :msg="formulier.msg" />
-								</v-row>
-								<v-row>
-									<EmailComp label="Email:" :msg="formulier.msg" />
+									<EmailComp :value="email2" @input="(value)=>{email2=value}" />
+									<!-- <EmailComp v-model="email2" /> -->
+									<!-- v-model="formulier.email2" -->
 								</v-row>
 							</v-col>
 						</v-row>
 					</v-card-text>
 				</v-card>
-				<!-- <v-col>
-					<v-dialog v-model="optioneledialog" persistent max-width="600px">
-						<template v-slot:activator="{ on }">
-							<v-btn v-on="on">Optionele gegevens</v-btn>
-						</template>
-						<v-card>
-							<v-card-title>
-								<span class="headline">Optionele gegevens</span>
-							</v-card-title>
-							<v-card-text>
-								<v-container>
-									<v-row>
-										<v-col cols="12" sm="6" md="6">
-											<v-text-field v-model="formulier.fullname" :rules="fullnameRules" :counter="40" label="Volledige naam"></v-text-field>
-										</v-col>
-										<v-col cols="12" sm="6" md="6">
-											<v-select return-object v-model="formulier.selecttaal" :items="BEtaal" item-text="taal" item-value="formulier.selecttaal.abbr" label="Uw voorkeurtaal" :hint=voorkeurtaal></v-select>
-										</v-col>
-										<v-col cols="12">
-											<v-tooltip bottom>
-												<template v-slot:activator="{ on }">
-													<v-text-field v-model="formulier.wachtw" :rules="wwRules" :counter="12" label="Wachtwoord" :hint="ww">
-													</v-text-field>
-												</template>
-												<span>{{ ww }}</span>
-											</v-tooltip>
-										</v-col>
-									</v-row>
-								</v-container>
-							</v-card-text>
-							<v-card-actions>
-								<v-spacer></v-spacer>
-								<v-btn color="blue darken-1" text @click="optioneledialog = false">Close</v-btn>
-								<v-btn color="blue darken-1" text @click="optioneledialog = false">Save</v-btn>
-							</v-card-actions>
-						</v-card>
-					</v-dialog>
-				</v-col> -->
 				<v-card>
 					<v-card-title class="title font-weight-regular">De beschikbare lijsten</v-card-title>
 					<v-card-text>
@@ -76,7 +38,7 @@
 				</v-card>
 				<v-card>
 					<v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Bent u akkoord ?" required></v-checkbox>
-					<v-dialog v-model="dialoog" :overlay-color="feedbackcolor" width="500">
+					<v-dialog v-model="dialoog" width="500">
 						<template v-slot:activator="{ on }">
 							<v-btn :disabled="!formulier.valid" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
 						</template>
@@ -103,9 +65,6 @@
 			</v-form>
 			<v-snackbar v-model="snackbar" :timeout="800">
 				{{ snackbartext }}
-				<v-btn :color="feedbackcolor" text @click="snackbar = false">
-					Close
-				</v-btn>
 			</v-snackbar>
 		</v-container>
 	</v-app>
@@ -187,14 +146,17 @@ export default {
 			};
 			axios(opt)
 				.then((response) => {
-					const r = response.data.replace(/\s+/g, ' ').trim()
-					this.ax = r.replace(/<table.*table>/, '')
+					let r = response.data.replace(/\s+/g, ' ').trim()
+					r = r.replace(/<table.*table>/, '')
+					this.ax = r.match(/<body.*?>([\s\S]*)<\/body>/gs)
+					// this.ax = this.ax.replace(/bgcolor="white"/, '')
+					// this.ax = this.ax.replace(/<\/head>/, '<style> div { background-color: #66ff99; } </style> </head>')
 					if (this.ax.includes("Uw aanmeldingsverzoek is ontvangen en zal zo spoedig")) {
-            this.snackbar = true
-            this.snackbartext = 'Het ziet er goed uit'
+						this.snackbar = true
+						this.snackbartext = 'Het ziet er goed uit'
 					} else {
-            this.snackbar = true
-            this.snackbartext = 'Er lijkt een probleem te zijn'
+						this.snackbar = true
+						this.snackbartext = 'Er lijkt een probleem te zijn'
 					}
 					this.messages++
 					return 'xxx'
@@ -237,9 +199,11 @@ export default {
 			}
 		],
 		lijsten: 'info_nl',
+		email2: '',
 		formulier: {
 			msg: 'MagWegLater',
 			email: '',
+			email2: '',
 			wachtw: '',
 			checkbox: '',
 			checknl: false,
