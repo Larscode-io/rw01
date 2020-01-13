@@ -1,33 +1,36 @@
 <template>
 <div class="hello">
-	<v-text-field :value="value" @input="updateValue" :validate-on-blur="true" @blur="$v.formulier.email2.$touch()" />
+  <!-- <v-text-field :value="value" @input="updateValue" :rules="emailRules" placeholder="user@yahoo.com" /> -->
+  <v-text-field v-model="email" placeholder="user@yahoo.com" />
 </div>
 </template>
+
 <script>
-import {
-	required,
-	email
-} from 'vuelidate/lib/validators'
-
 export default {
-	name: 'EmailComp',
-	props: {
-		value: [String, Number]
-	},
-	validations: {
-		formulier: {
-			email2: {
-				required,
-				email
-			}
-		}
-	},
-
-	methods: {
-		updateValue(e) {
-			// this.$emit('input', e.target.value)
-			this.$emit('input', e)
-		}
-	}
+  name: 'EmailComp',
+  props: {
+    value: [String, Number],
+    v: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    email: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.v.$touch();
+        this.$emit('input', value);
+      }
+    }
+  },
+  methods: {
+    updateValue(e) {
+      // this.$emit('input', e.target.value)
+      this.$emit('input', e)
+    }
+  }
 }
 </script>
