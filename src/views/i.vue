@@ -7,7 +7,6 @@
       <!-- <v-textarea v-model="bio" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
       <v-form ref="form" v-model="formulier.valid">
         <v-card>
-          <v-card-title class="title font-weight-regular">Persoonlijke gegevens</v-card-title>
           <v-card-text>
             <v-row>
               <v-col>
@@ -16,12 +15,12 @@
                   <v-text-field v-model="formulier.email" :rules="emailRules" :autofocus="true" label="E-mail" :hint="bio" required :validate-on-blur="true" @blur="$v.formulier.email.$touch()"></v-text-field>
                 </v-row> -->
                 <v-row>
-                  <!-- <EmailComp :value="formulier.email2" @input="(value)=>{formulier.email2=value}" :rules="emailRules" /> -->
-                  <EmailComp v-model="formulier.email2" :v="$v.formulier.email2" />
+                  <!-- v-model="formulier.email2" === :value="formulier.email2" @input="(value)=>{formulier.email2=value}" -->
+                  <EmailComp v-model="formulier.email2" :v="$v.formulier.email2" v-on:blurrr="formulier.xxx=true" kleur="red"/>
                   <!-- <div v-if="emailErrors">
                     <p v-if="!$v.formulier.email2.email">e-mail waarschijnlijk ongeldig</p>
-                    <p v-if="!$v.formulier.email2.required">e-mail is vereist</p> -->
-                  <!-- </div> -->
+                    <p v-if="!$v.formulier.email2.required">e-mail is vereist</p>
+                  </div> -->
                 </v-row>
               </v-col>
             </v-row>
@@ -38,10 +37,13 @@
           </v-card-text>
         </v-card>
         <v-card>
-          <v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Bent u akkoord ?" required></v-checkbox>
+          <div v-if="$v.formulier.$invalid && formulier.xxx">
+          <v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
+        </div>
           <v-dialog v-model="dialoog" width="500">
             <template v-slot:activator="{ on }">
-              <v-btn :disabled="!formulier.valid" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
+              <v-btn :disabled="!formulier.valid && !formulier.checkbox" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
+              <!-- $v.formulier.$error -->
             </template>
             <v-card>
               <v-card-title class="headline grey lighten-2" primary-title>
@@ -50,6 +52,7 @@
               <v-card-text>
                 <div v-if="!er">
                   <span v-html="ax"></span>
+                  <v-textarea v-model="slot" auto-grow filled label="Info" rows="1"></v-textarea>
                 </div>
                 <div v-else>Mailman service is niet beschikbaar</div>
               </v-card-text>
@@ -61,7 +64,7 @@
             </v-card>
           </v-dialog>
           <v-spacer> </v-spacer>
-          <v-textarea v-model="slot" auto-grow filled label="Info" rows="1"></v-textarea>
+          <v-textarea v-model="bio" auto-grow filled label="Info" rows="1"></v-textarea>
         </v-card>
       </v-form>
       <v-snackbar v-model="snackbar" :timeout="800">
@@ -102,7 +105,7 @@ export default {
   methods: {
     submit() {
       const params = new URLSearchParams();
-      params.append('email', this.formulier.email.replace(/(["'|])/g, '\\'));
+      params.append('email', this.formulier.email2.replace(/(["'|])/g, '\\'));
       params.append('fullname', this.formulier.fullname);
       params.append('language', this.formulier.selecttaal.abbr);
       params.append('pw', this.formulier.wachtw);
@@ -182,7 +185,7 @@ export default {
     dialoog: false,
     optioneledialog: false,
     url: 'xxx',
-    bio: 'Uw e-mailadres zal enkel worden gebruikt voor het versturen van die nieuwsbrief. Wij geven het niet aan derden.',
+    bio: 'Ik bevestig hierbij dat de ingevulde informatie mag worden gebruikt voor het versturen van de nieuwsbrief.',
     ww: 'Automatisch gegenereerd indien niet ingevuld',
     slot: 'Om aan te melden op meerdere nieuwsbrieven maakt u een nieuwe keuze en accepteert u opnieuw.',
     voorkeurtaal: 'Kies hier Uw voorkeurtaal voor de berichtgeving, de taal van het toegezonden arrest kiest u via de lijstkeuze',
@@ -205,6 +208,7 @@ export default {
       msg: 'MagWegLater',
       email: '',
       email2: '',
+      xxx: false,
       wachtw: '',
       checkbox: '',
       checknl: false,
