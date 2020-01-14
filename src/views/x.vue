@@ -3,10 +3,8 @@
 	<v-app>
 		<v-container>
 			<h1 class="title font-weight-regular">Afmelden Nieuwsbrief en Opvragen wachtwoord</h1>
-			<!-- <v-textarea v-model="bio" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
 			<v-form ref="form" v-model="formulier.valid">
 				<v-card>
-					<v-card-title class="title font-weight-regular">Persoonlijke gegevens</v-card-title>
 					<v-card-text>
 						<v-text-field v-model="formulier.email" :rules="emailRules" label="E-mail" :hint=bio required></v-text-field>
 					</v-card-text>

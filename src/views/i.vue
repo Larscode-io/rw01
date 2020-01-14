@@ -2,25 +2,16 @@
 <div class="i">
   <v-app>
     <v-container>
-      <h1 class="title font-weight-regular">devlars911@gmail.com</h1>
-      <!-- <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief</h1> -->
-      <!-- <v-textarea v-model="bio" auto-grow filled color="deep-purple" label="Info" rows="1"></v-textarea> -->
+      <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief devlars911@gmail.com</h1>
       <v-form ref="form" v-model="formulier.valid">
         <v-card>
           <v-card-text>
             <v-row>
               <v-col>
-                <!-- <v-row>
-                  <v-text-field v-model="formulier.email" :rules="emailRules" :autofocus="true" label="E-mail" :hint="bio" required></v-text-field>
-                  <v-text-field v-model="formulier.email" :rules="emailRules" :autofocus="true" label="E-mail" :hint="bio" required :validate-on-blur="true" @blur="$v.formulier.email.$touch()"></v-text-field>
-                </v-row> -->
                 <v-row>
+                  <EmailComp v-model="formulier.email2" :vv="$v.formulier.email2" v-on:blurrr="formulier.delayForceSubmit=false" />
+                  <!-- :validate-on-blur="true" @blur="$v.formulier.email.$touch() -->
                   <!-- v-model="formulier.email2" === :value="formulier.email2" @input="(value)=>{formulier.email2=value}" -->
-                  <EmailComp v-model="formulier.email2" :v="$v.formulier.email2" v-on:blurrr="formulier.xxx=true" kleur="red"/>
-                  <!-- <div v-if="emailErrors">
-                    <p v-if="!$v.formulier.email2.email">e-mail waarschijnlijk ongeldig</p>
-                    <p v-if="!$v.formulier.email2.required">e-mail is vereist</p>
-                  </div> -->
                 </v-row>
               </v-col>
             </v-row>
@@ -37,13 +28,12 @@
           </v-card-text>
         </v-card>
         <v-card>
-          <div v-if="$v.formulier.$invalid && formulier.xxx">
+          <div v-if="$v.formulier.$invalid && !formulier.delayForceSubmit">
           <v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
         </div>
           <v-dialog v-model="dialoog" width="500">
             <template v-slot:activator="{ on }">
               <v-btn :disabled="!formulier.valid && !formulier.checkbox" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
-              <!-- $v.formulier.$error -->
             </template>
             <v-card>
               <v-card-title class="headline grey lighten-2" primary-title>
@@ -151,10 +141,7 @@ export default {
       axios(opt)
         .then((response) => {
           let r = response.data.replace(/\s+/g, ' ').trim()
-          r = r.replace(/<table.*table>/, '')
-          this.ax = r.match(/<body.*?>([\s\S]*)<\/body>/gs)
-          // this.ax = this.ax.replace(/bgcolor="white"/, '')
-          // this.ax = this.ax.replace(/<\/head>/, '<style> div { background-color: #66ff99; } </style> </head>')
+          this.ax = r.replace(/<table.*table>/, '')
           if (this.ax.includes("Uw aanmeldingsverzoek is ontvangen en zal zo spoedig")) {
             this.snackbar = true
             this.snackbartext = 'Het ziet er goed uit'
@@ -171,13 +158,6 @@ export default {
     }
   },
   computed: {
-    feedbackcolor() {
-      if (this.ax.includes("Uw aanmeldingsverzoek is ontvangen en zal zo spoedig")) {
-        return "green"
-      } else {
-        return "red"
-      }
-    }
   },
   data: () => ({
     snackbar: false,
@@ -185,10 +165,10 @@ export default {
     dialoog: false,
     optioneledialog: false,
     url: 'xxx',
-    bio: 'Ik bevestig hierbij dat de ingevulde informatie mag worden gebruikt voor het versturen van de nieuwsbrief.',
-    ww: 'Automatisch gegenereerd indien niet ingevuld',
+    bio: `Ik bevestig hierbij dat de ingevulde informatie mag worden gebruikt voor het \
+versturen van de nieuwsbrief. Afmelden kan onder het menu "Afmelden" of via de link \
+in die elke nieuwsbrief bevat.`,
     slot: 'Om aan te melden op meerdere nieuwsbrieven maakt u een nieuwe keuze en accepteert u opnieuw.',
-    voorkeurtaal: 'Kies hier Uw voorkeurtaal voor de berichtgeving, de taal van het toegezonden arrest kiest u via de lijstkeuze',
     BEtaal: [{
         taal: 'Nederlands',
         abbr: 'nl'
@@ -208,7 +188,7 @@ export default {
       msg: 'MagWegLater',
       email: '',
       email2: '',
-      xxx: false,
+      delayForceSubmit: true,
       wachtw: '',
       checkbox: '',
       checknl: false,
@@ -233,13 +213,6 @@ export default {
       v => !!v || 'E-mail is het (enige) verplichtte gegeven',
       // v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail moet geldig zijn'
     ],
-    emailErrors() {
-      const errors = [];
-      if (!this.$v.formulier.email2.$dirty) return errors;
-      !this.$v.formulier.email2.email && errors.push("Must be valid e-mail");
-      !this.$v.formulier.email2.required && errors.push("E-mail is required");
-      return errors;
-    },
     messages: 0,
     kleur: ''
   })
