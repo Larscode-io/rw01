@@ -2,7 +2,7 @@
 <div class="i">
   <v-app>
     <v-container>
-      <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief devlars911@gmail.com</h1>
+      <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief</h1>
       <v-form ref="form" v-model="formulier.valid">
         <v-card>
           <v-card-text>
@@ -31,7 +31,7 @@
           <div v-if="$v.formulier.$invalid && !formulier.delayForceSubmit">
           <v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
         </div>
-          <v-dialog v-model="dialoog" width="500">
+          <v-dialog v-model="dialoog" width="700">
             <template v-slot:activator="{ on }">
               <v-btn :disabled="!formulier.valid && !formulier.checkbox" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
             </template>
@@ -142,6 +142,18 @@ export default {
         .then((response) => {
           let r = response.data.replace(/\s+/g, ' ').trim()
           this.ax = r.replace(/<table.*table>/, '')
+          this.ax = r
+            .replace(/<table.*table>/, '') // tabel met reklame wegwerken
+            .replace(/<h1>(info_nl|info_fr|pdf_de) /, '<br><h1>') // dit label wegwerken
+            .replace(/Uw aanmeldingsverzoek is ontvangen en zal zo spoedig mogelijk worden verwerkt/, '<span style="color:green">$&</span>')
+            .replace(/Het door u opgegeven e-mailadres is niet geldig/, '<span style="color:red">$&</span>')
+            .replace(/Uw aanmelding is niet toegestaan omdat het door u opgegeven e-mailadres onveilig is/, '<span style="color:red">$&</span>')
+            .replace(/Votre demande d'abonnement a été reçue et sera bientôt traitée/, '<span style="color:green">$&</span>')
+            .replace(/L'adresse courriel fournie n'est pas valide/, '<span style="color:red">$&</span>')
+            .replace(/Votre abonnement est impossible parce que l'adresse courriel fournie n'est pas sûre/, '<span style="color:red">$&</span>')
+            .replace(/Ihr Abonnement-Antrag ist soeben eingetroffen und wird alsbald bearbeitet/, '<span style="color:green">$&</span>')
+            .replace(/Die von Ihnen angegebene E-Mail-Adresse ist ungültig/, '<span style="color:red">$&</span>')
+            .replace(/Sie dürfen nicht abonnieren weil die von Ihnen angegebene E-Mail-Adresse als unsicher betrachtet wird/, '<span style="color:red">$&</span>')
           if (this.ax.includes("Uw aanmeldingsverzoek is ontvangen en zal zo spoedig")) {
             this.snackbar = true
             this.snackbartext = 'Het ziet er goed uit'
