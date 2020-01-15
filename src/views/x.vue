@@ -1,5 +1,5 @@
 <template>
-<div class="xxxx">
+<div class="uitschrijven">
 	<v-app>
 		<v-container>
 			<h1 class="title font-weight-regular">Afmelden Nieuwsbrief en Opvragen wachtwoord</h1>

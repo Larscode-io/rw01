@@ -1,19 +1,15 @@
 <template>
-<div class="i">
+<div class="inschrijven">
   <v-app>
     <v-container>
       <h1 class="title font-weight-regular">Inschrijving Nieuwsbrief</h1>
-      <v-form ref="form" v-model="formulier.valid">
+      <v-form ref="form" v-model="formulier2.valid">
         <v-card>
           <v-card-text>
             <v-row>
-              <v-col>
-                <v-row>
-                  <EmailComp v-model="formulier.email2" :vv="$v.formulier.email2" v-on:blurrr="formulier.delayForceSubmit=false" />
-                  <!-- :validate-on-blur="true" @blur="$v.formulier.email.$touch() -->
-                  <!-- v-model="formulier.email2" === :value="formulier.email2" @input="(value)=>{formulier.email2=value}" -->
-                </v-row>
-              </v-col>
+                  <EmailComp v-model="formulier2.email2" :vv="$v.formulier2.email2" v-on:blurrr="formulier2.delayForceSubmit=false" />
+                  <!-- :validate-on-blur="true" @blur="$v.formulier2.email.$touch() -->
+                  <!-- v-model="formulier2.email2" === :value="formulier2.email2" @input="(value)=>{formulier2.email2=value}" -->
             </v-row>
           </v-card-text>
         </v-card>
@@ -28,12 +24,12 @@
           </v-card-text>
         </v-card>
         <v-card>
-          <div v-if="$v.formulier.$invalid && !formulier.delayForceSubmit">
-          <v-checkbox v-model="formulier.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
+          <div v-if="$v.formulier2.$invalid && !formulier2.delayForceSubmit"> //delay opheffen na blur
+          <v-checkbox v-model="formulier2.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
         </div>
-          <v-dialog v-model="dialoog" width="700">
+          <v-dialog v-model="MailmanDialoog" width="700">
             <template v-slot:activator="{ on }">
-              <v-btn :disabled="!formulier.valid && !formulier.checkbox" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
+              <v-btn :disabled="!formulier2.valid && !formulier2.checkbox" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
             </template>
             <v-card>
               <v-card-title class="headline grey lighten-2" primary-title>
@@ -49,7 +45,7 @@
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" text @click="dialoog = false"> accepteer </v-btn>
+                <v-btn color="primary" text @click="MailmanDialoog = false"> accepteer </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -57,9 +53,6 @@
           <v-textarea v-model="bio" auto-grow filled label="Info" rows="1"></v-textarea>
         </v-card>
       </v-form>
-      <v-snackbar v-model="snackbar" :timeout="800">
-        {{ snackbartext }}
-      </v-snackbar>
     </v-container>
   </v-app>
 </div>
@@ -67,17 +60,14 @@
 
 <script>
 import axios from 'axios'
-import {
-  required,
-  email
-} from 'vuelidate/lib/validators'
+import { required, email } from 'vuelidate/lib/validators'
 import EmailComp from '@/components/EmailComp.vue'
 // @ is an alias to /src
 
 export default {
   name: 'home',
   validations: {
-    formulier: {
+    formulier2: {
       email2: {
         required,
         email
@@ -95,12 +85,12 @@ export default {
   methods: {
     submit() {
       const params = new URLSearchParams();
-      params.append('email', this.formulier.email2.replace(/(["'|])/g, '\\'));
-      params.append('fullname', this.formulier.fullname);
-      params.append('language', this.formulier.selecttaal.abbr);
-      params.append('pw', this.formulier.wachtw);
-      params.append('pw-conf', this.formulier.wachtw);
-      params.append('digest', 0);
+      params.append('email', this.formulier2.email2.replace(/(["'|])/g, '\\'));
+      // params.append('fullname', this.formulier2.fullname);
+      // params.append('language', this.formulier2.selecttaal.abbr);
+      // params.append('pw', this.formulier2.wachtw);
+      // params.append('pw-conf', this.formulier2.wachtw);
+      // params.append('digest', 0);
       switch (this.lijsten) {
         case 'info_nl':
           this.url = 'https://mailman.const-court.be/mailman/subscribe/info_nl'
@@ -141,10 +131,10 @@ export default {
       axios(opt)
         .then((response) => {
           let r = response.data.replace(/\s+/g, ' ').trim()
-          this.ax = r.replace(/<table.*table>/, '')
           this.ax = r
             .replace(/<table.*table>/, '') // tabel met reklame wegwerken
-            .replace(/<h1>(info_nl|info_fr|pdf_de) /, '<br><h1>') // dit label wegwerken
+            .replace(/<h1>(info_nl|info_fr|pdf_de) /, '<h1>') // dit label wegwerken
+            .replace(/<h1>/, '<br><h1>') // dit label wegwerken
             .replace(/Uw aanmeldingsverzoek is ontvangen en zal zo spoedig mogelijk worden verwerkt/, '<span style="color:green">$&</span>')
             .replace(/Het door u opgegeven e-mailadres is niet geldig/, '<span style="color:red">$&</span>')
             .replace(/Uw aanmelding is niet toegestaan omdat het door u opgegeven e-mailadres onveilig is/, '<span style="color:red">$&</span>')
@@ -154,14 +144,6 @@ export default {
             .replace(/Ihr Abonnement-Antrag ist soeben eingetroffen und wird alsbald bearbeitet/, '<span style="color:green">$&</span>')
             .replace(/Die von Ihnen angegebene E-Mail-Adresse ist ungültig/, '<span style="color:red">$&</span>')
             .replace(/Sie dürfen nicht abonnieren weil die von Ihnen angegebene E-Mail-Adresse als unsicher betrachtet wird/, '<span style="color:red">$&</span>')
-          if (this.ax.includes("Uw aanmeldingsverzoek is ontvangen en zal zo spoedig")) {
-            this.snackbar = true
-            this.snackbartext = 'Het ziet er goed uit'
-          } else {
-            this.snackbar = true
-            this.snackbartext = 'Er lijkt een probleem te zijn'
-          }
-          this.messages++
           return 'xxx'
         })
         .catch((e) => {
@@ -172,10 +154,7 @@ export default {
   computed: {
   },
   data: () => ({
-    snackbar: false,
-    snackbartext: '',
-    dialoog: false,
-    optioneledialog: false,
+    MailmanDialoog: false,
     url: 'xxx',
     bio: `Ik bevestig hierbij dat de ingevulde informatie mag worden gebruikt voor het \
 versturen van de nieuwsbrief. Afmelden kan onder het menu "Afmelden" of via de link \
@@ -195,23 +174,14 @@ in die elke nieuwsbrief bevat.`,
       }
     ],
     lijsten: 'info_nl',
-    email2: '',
-    formulier: {
-      msg: 'MagWegLater',
-      email: '',
+    formulier2: {
       email2: '',
       delayForceSubmit: true,
-      wachtw: '',
       checkbox: '',
       checknl: false,
       checkfr: false,
       checkde: false,
       valid: false,
-      fullname: '',
-      selecttaal: {
-        taal: '',
-        abbr: ''
-      },
     },
     ax: '',
     er: '',
