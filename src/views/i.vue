@@ -11,20 +11,18 @@
                   <!-- :validate-on-blur="true" @blur="$v.formulier2.email.$touch() -->
                   <!-- v-model="formulier2.email2" === :value="formulier2.email2" @input="(value)=>{formulier2.email2=value}" -->
             </v-row>
-          </v-card-text>
-        </v-card>
-        <v-card>
-          <v-card-title class="title font-weight-regular">De beschikbare lijsten</v-card-title>
-          <v-card-text>
+            <v-row>
             <v-radio-group v-model="lijsten" :mandatory="true">
-              <v-radio label="Nieuwsbrief in het Nederlands, spoedig na de uitspraak" value="info_nl"></v-radio>
-              <v-radio label="Nieuwsbrief in het Frans, spoedig na de uitspraak" value="info_fr"></v-radio>
-              <v-radio label="Nieuwsbrief in het Duits, zonder trefwoorden" value="pdf_de"></v-radio>
+              <v-radio label="Nieuwsbrief in het Nederlands" value="info_nl"></v-radio>
+              <v-radio label="Nieuwsbrief in het Frans" value="info_fr"></v-radio>
+              <v-radio label="Nieuwsbrief in het Duits (zonder trefwoorden)" value="pdf_de"></v-radio>
             </v-radio-group>
+            </v-row>
           </v-card-text>
         </v-card>
         <v-card>
-          <div v-if="$v.formulier2.$invalid && !formulier2.delayForceSubmit"> //delay opheffen na blur
+          <div v-if="$v.formulier2.$invalid && !formulier2.delayForceSubmit">
+            <!-- delay opheffen na blur -->
           <v-checkbox v-model="formulier2.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
         </div>
           <v-dialog v-model="MailmanDialoog" width="700">
@@ -156,9 +154,10 @@ export default {
   data: () => ({
     MailmanDialoog: false,
     url: 'xxx',
-    bio: `Ik bevestig hierbij dat de ingevulde informatie mag worden gebruikt voor het \
-versturen van de nieuwsbrief. Afmelden kan onder het menu "Afmelden" of via de link \
-in die elke nieuwsbrief bevat.`,
+    bio: `Uw e-mailadres zal enkel worden gebruikt voor het versturen van die nieuwsbrief. \
+Wij geven die informatie niet aan derden. Later zal het steeds mogelijk zijn u uit te schrijven \
+via de link die in elke nieuwsbrief wordt medegedeeld. Door op 'Accepteer' te klikken, \
+stemt u ermee in de nieuwsbrief onder de bovenbedoelde voorwaarden te blijven ontvangen.`,
     slot: 'Om aan te melden op meerdere nieuwsbrieven maakt u een nieuwe keuze en accepteert u opnieuw.',
     BEtaal: [{
         taal: 'Nederlands',
