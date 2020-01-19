@@ -156,8 +156,10 @@ export default {
     url: 'xxx',
     bio: `Uw e-mailadres zal enkel worden gebruikt voor het versturen van die nieuwsbrief. \
 Wij geven die informatie niet aan derden. Later zal het steeds mogelijk zijn u uit te schrijven \
-via de link die in elke nieuwsbrief wordt medegedeeld. Door op 'Accepteer' te klikken, \
-stemt u ermee in de nieuwsbrief onder de bovenbedoelde voorwaarden te blijven ontvangen.`,
+via de link die in elke nieuwsbrief wordt medegedeeld. \
+Na het invullen van uw e-mail adres zal u een e-mail ontvangen waarin u nogmaals uw \
+inschrijving dient te bevestigen. Door op 'Accepteer' te klikken, stemt u ermee in de nieuwsbrief \
+onder de bovenbedoelde voorwaarden te blijven ontvangen.`,
     slot: 'Om aan te melden op meerdere nieuwsbrieven maakt u een nieuwe keuze en accepteert u opnieuw.',
     BEtaal: [{
         taal: 'Nederlands',
