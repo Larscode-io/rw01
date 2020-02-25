@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import x from '../views/x.vue'
 import i from '../views/i.vue'
+import j from '../views/j.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -28,6 +29,11 @@ const routes = [
     path: '/i',
     name: 'i',
     component: i
+  },
+  {
+    path: '/j',
+    name: 'j',
+    component: j
   }
 ]
 

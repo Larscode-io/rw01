@@ -100,7 +100,7 @@ export default {
           this.url = 'https://mailman.const-court.be/mailman/subscribe/pdf_de'
           break;
         default: {
-          // geen selectie ? kies in functie van de taal
+          // geen selectie ? kies in functie van de taal van de BROWSER / code hieronder nog verbeteren
           switch (this.selecttaal.abbr) {
             case 'nl':
               this.url = 'https://mailman.const-court.be/mailman/subscribe/info_nl'
