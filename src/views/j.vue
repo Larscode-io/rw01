@@ -7,7 +7,7 @@
 				<v-card>
 					<v-card-text>
 						<v-checkbox v-model="formulier.allrol" label="Alle rolnummers" ></v-checkbox>
-						<v-text-field v-model.number="formulier.rolnr" :autofocus="true" :rules="rolRules" label="Rolnummer"> </v-text-field>
+						<v-text-field v-model.number="formulier.rolnr" :autofocus="true" :rules="rolRules" label="Rolnummer" :disabled=formulier.allrol :hide-details=formulier.allrol> </v-text-field>
 						<v-text-field v-model="formulier.email" :rules="emailRules" label="E-mail" :hint=bio> </v-text-field>
 					</v-card-text>
 				</v-card>
@@ -21,6 +21,7 @@
 					<section v-if="idroles.includes(formulier.rolnr) && !errored">
 						{{ rolRestData.data.find(x => (x.idRole === formulier.rolnr)).trefwoorden.toLowerCase() }}
 					</section>
+						{{ !this.formulier.allrol }}
 			</v-form>
 		</v-container>
 	</v-app>
@@ -109,9 +110,7 @@ export default {
 		rolRules() {
 			return [
 				v => !!v || 'Een rolnummer is nodig',
-				v => this.idroles.includes(v) || 'Dit rolnummer lijkt onvolledig of niet te bestaan'
-				// v => this.idroles.includes(v) || "info:".concat(this.idroles.includes(v).toString()).concat(this.idroles.toString())
-				// xx.find(x => x.idRole = 7009).trefwoorden
+				v => this.idroles.includes(v) || !this.formulier.allrol || 'Dit rolnummer lijkt onvolledig of niet te bestaan'
 			]
 		},
 	},
