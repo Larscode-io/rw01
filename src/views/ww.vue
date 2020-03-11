@@ -66,7 +66,7 @@ u bent ingeschreven krijgt u een mailbericht. U kan dan kiezen voor welke lijst 
 af te melden.`,
 		formulier: {
 			email: '',
-      isValid: 'false',
+      isValid: false,
 			loginremind: 'Herinnering',
 			loginunsub: 'Afmelden',
 		},

@@ -23,8 +23,8 @@
         <v-card>
           <div v-if="$v.formulier2.$invalid && !formulier2.delayForceSubmit">
             <!-- delay opheffen na blur -->
-          <v-checkbox v-model="formulier2.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
-        </div>
+            <v-checkbox v-model="formulier2.checkbox" :rules="[v => !!v || 'U dient akkoord aan te vinken om verder te gaan!']" label="Mogelijk ongeldige invoer negeren" required></v-checkbox>
+          </div>
           <v-dialog v-model="MailmanDialoog" width="700">
             <template v-slot:activator="{ on }">
               <v-btn :disabled="!formulier2.valid && !formulier2.checkbox" color="primary" v-on="on" @click="submit">Accepteer</v-btn>
